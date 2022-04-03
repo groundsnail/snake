@@ -5,17 +5,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Panel extends JPanel implements KeyListener {
+public class Panel extends JPanel implements KeyListener, ActionListener {
     int length;
     int[] x =new int[100];
     int[] y =new int[100];
     boolean isStart = false;
-//    Timer tme =new Timer(100,this);
+    Timer tme =new Timer(100,this);
     public Panel() {
         init();
         this.setFocusable(true); //获取焦点事件
         this.addKeyListener(this); //键盘监听事件
-//        timer.start();
+        tme.start();
     }
 
     public void init(){
@@ -62,5 +62,18 @@ public class Panel extends JPanel implements KeyListener {
     }
 
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (isStart == true) {
 
+            for (int i = length-1; i >0 ; i--) {
+                x[i]=x[i-1];
+                y[i]=y[i-1];
+            }
+            x[0]=x[0]+30;
+            y[0]=y[0];
+            repaint();
+        }
+        tme.start();
+    }
 }
