@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 public class Panel extends JPanel implements KeyListener, ActionListener {
     int length;
@@ -11,9 +12,12 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
     int[] y =new int[100];
     boolean isStart = false;
     String direction = "R";
+    String d0="R";
     Timer tme =new Timer(100,this);
-    int foodX=(int)(Math.random()*1000);
-    int foodY=(int)(Math.random()*1000);
+    int foodX;
+    int foodY;
+    int score;
+    Random random=new Random();
     public Panel() {
         init();
         this.setFocusable(true); //获取焦点事件
@@ -29,6 +33,10 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
         y[1]=20;
         x[2]=20;
         y[2]=20;
+        foodX=80+30;
+        foodY=20+60;
+        isStart = false;
+        score =0;
     }
     @Override
     protected void paintComponent(Graphics g) {
@@ -51,10 +59,13 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
             Data.ibody.paintIcon(this,g,x[i],y[i]);
         }
         if (isStart == false) {
-            g.drawString("开始游戏",200,200);
+            g.setFont(new Font("微软雅黑",Font.BOLD,60));
+            g.drawString("s键 开始游戏",200,200);
 
         }
-        else {Data.food.paintIcon(this,g,foodX,foodY);}
+        Data.food.paintIcon(this,g,foodX,foodY);
+        g.setFont(new Font("微软雅黑",Font.BOLD,40));
+        g.drawString("积分"+score,1000,50);
     }
 
     @Override
@@ -70,16 +81,16 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
 
             repaint();
         }
-        if (keyCode == KeyEvent.VK_RIGHT) {
+        if (keyCode == KeyEvent.VK_RIGHT&&!direction.equals("L")) {
             direction= "R";
         }
-        if (keyCode == KeyEvent.VK_LEFT) {
+        if (keyCode == KeyEvent.VK_LEFT&&!direction.equals("R")) {
             direction= "L";
         }
-        if (keyCode == KeyEvent.VK_DOWN) {
+        if (keyCode == KeyEvent.VK_DOWN&&!direction.equals("U")) {
             direction= "D";
         }
-        if (keyCode == KeyEvent.VK_UP) {
+        if (keyCode == KeyEvent.VK_UP&&!direction.equals("D")){
             direction= "U";
         }
     }
@@ -129,7 +140,19 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
                 y[0]=y[0]+30;
                 repaint();
             }
-
+            if(x[0]==foodX&&y[0]==foodY) {
+                length++;
+                score=score+10;
+                foodX=80+30*random.nextInt(40);
+                foodY=20+30*random.nextInt(30);
+                x[length-1]=x[length-2];
+                y[length-1]=y[length-2];
+            }
+            for (int i = 1; i < length; i++) {
+                if (x[i] == x[0]&&y[i]==y[0]) {
+                 init();
+                }
+            }
         }
         tme.start();
     }
